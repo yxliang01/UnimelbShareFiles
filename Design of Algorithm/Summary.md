@@ -866,12 +866,35 @@ We need
 Hash functions
 -----
 
-- simplest one $h(key) = key \mod m$
-- universal hash function
+- Must be consistent
+- Examples
+    + simplest one $h(key) = key \mod m$
+    + universal hash function
 
 
+Universal Hash Function
+=====
 
-Crytographic Hash Function
+*Have to try the tutorial question*
+
+A universal hash family $H$ allows generating hash functions $h \in H \text{ such that } Pr[h(x) = h(y)] = 1/p, p \text{ is the hash table size }$
+
+
+A universal hash function
+
+- should have its result generated randomly
+- return a value depends on the every part of the key
+- for any two distinct data items $x$ and $y$, exactly $|H|/n$ of all the hash functions in $H$ map $x$ and $y$ to the same bucket, where $n$ is the number of buckets 
+
+
+Linear Congruential Generator
+-----
+
+$$h(x) = ((ax + b) \mod q) \mod p$$
+$\text{for } a \ne 0, q \text{ a prime number $> p$ }, a,b \text{ are random integers}\mod q$
+
+
+Cryptographic Hash Function
 =====
 
 still, they are hash functions $h: key \text{ -> integer in range $[0, m)$} $
@@ -1144,7 +1167,7 @@ Dynamic Programming
 
 It's particularly useful when an algorithm needs the results of sub-problems for ****multiple times****.
 
-It's a technique used to speed up calculations when there are lots of redundant calculations. We memorize the result of each calculation for the sub-problems, then use the memorized result when we have to need 
+It's a technique used to speed up calculations when there are lots of *redundant calculations*. We memorize the result of each calculation for the sub-problems, then use the memorized result when we have to need 
 
 
 Fibonacci
@@ -1181,16 +1204,31 @@ function fib(n)
 Longest increasing subsequence
 -----
 
-Graph version (TODO)
+### Problem
+
+Given a sequence of numbers, find the longest increasing subsequence. A increasing subsequence is a subsequence with its numbers arranged in strictly increasing order. 
+
+
+### Graph version
+
+We build a graph such that there's an $edge(u,v)$ if $v$ has larger index in the array than $u$ and $v > u$.
+
+Time complexity: $O(n^2)$
+
 ```pseudocode
-function longest_subsequence(V, E)
+function longest_increasing_subsequence(V, E)
 
-    L = an array having index in range [1, |V|] with all elements 0
-    
-    for i in range [1, |V|]
-        L[i] = max{1 + L[j] for (j, i) in E}
+    input: a graph converted from a sequence of integers
+    output: the length of the longest increasing sequence
 
-    return L(n) - 1
+    L = an array having index in range [1, |V|] with all elements initialized to 0
+
+    // i - the index of the current vertex in the original array
+    for i in range [1, |V|] 
+
+        L[i] = 1 + max{L[j] for (j, i) in E} //max of {} is 0
+        
+    return max{L(n) for n in [1,|V|]}
 
 ```
 
@@ -1356,13 +1394,13 @@ problems
 If one of the NP-complete can be solved in polynomial time, $NP = P$
 
 
-Set Cardinality (TODO)
+Set Cardinality
 =====
 
 Problem
 -----
 
-Given a stream of items from a universe $U$ with $|U| = n$, keep track of the size $m$ of the set $S$ containing all unique items that have appeared so far.
+Given a stream of items from a universe $U$ with $|U| = n$, keep track of the size $m$ of the set $S$ containing all *unique items* that have appeared so far.
 
 
 Simple solutions
@@ -1384,6 +1422,7 @@ Good estimate
 - the estimation error should be low
 - space and runtime efficient
 - theoretical guarantees
+
 
 The log log algorithm
 -----
@@ -1418,11 +1457,58 @@ You have $2^{l}$ counters, with each one having size $\log \log p$
 4. if the count of the current number is greater than the current value in the corresponding counter, update it with current count
 5. when it's done, use the formula $\hat m = cq2^{\hat k}$ to estimate the cardinality $m$
 
+### Complexity
 
-### 
+Update Time complexity(calculation time for one item): $O(1)$ time
+Estimation Time complexity: $O(q)$ time
+Space complexity: $q\log \log p$ bits
 
 
+Bitcoin
+=====
 
+- You want to prove that you have performed a certain amount of work in order to get awarded
+- Small string $Q$ is generated based on the existing transactions in the bitcoin network
+- Task: find a string $X$ which has $Q$ as a suffix, which produces a hash containing a certain amount of tailing 0s
+- First person to "find" such a string gets awarded the next bitcoin
+
+
+Frequency Estimation
+=====
+
+Problem
+-----
+
+Given a stream of items from a universe $U$, we want to know the frequency $f_i$ of each item $i$ in the stream
+
+
+Count-Min Sketch
+-----
+
+### Definitions
+
+$p$ = the number of buckets of the hash tables
+$d$ = the number of hash tables
+$N$ = the number of items counted
+
+$p = ceil(e/\epsilon)$
+$d = ceil(\log_e \frac{1}{\delta})$
+It's guaranteed that after seeing $N$ items with probability $1-\delta$:
+$$f_i \ge \cap {f_i} \ge f_i + \epsilon N$$
+
+### Complexity
+
+Update Time complexity(calculation time for one item): $O(d)$ time - compute $d$ hashes and update $d$ buckets
+Estimation Time complexity: $O(d)$ time - take minimum of $d$ buckets
+Space complexity: $p x d x \log_2 n$ bits
+
+
+Sketches
+=====
+
+- allow space efficient processing of large data sets by utilizing summarization
+- easy to implement
+- provide theoretical guaranteed estimates of cardinality of a set and item frequencies
 
 
 K-th smallest algorithm
@@ -1553,7 +1639,8 @@ Algorithms
     + [] brute-force
     + [] dynamic programming
 - [X] K-th smallest algorithm
-- [] Set Cardinality
+- [X] Set Cardinality
+- [X] Frequency estimation
 
 Complexity Analysis
 -----
@@ -1587,7 +1674,7 @@ Definition
     + [X] secret sharing - how to force recipients to exchange information in order to let them get the message
 - Hashing
     + [X] Structure
-    + [] Universal Hash Function
+    + [X] Universal Hash Function
 - Algorithms
     + [X] NP-completeness
     + [X] P
