@@ -606,7 +606,7 @@ Topological sort
 ### Usage
 
 - only for DAGs
-- get a linearized order of vertices such that all the all the vertices after vertex $x$ must be descendants of $x$ in a DFS tree
+- get a linearized order of vertices such that all the vertices after vertex $x$ must be descendants of $x$ in a DFS tree
     + since it's a DAG (no back edge), descendants must not able to reach their ancestors
 
 
@@ -932,12 +932,12 @@ Symmetrical VS Asymmetrical
 Symmetrical
 
 - encrypt and decrypt using the *same key*
-- AES-256
+	+ AES-256
 
 Asymmetrical
 
 - encrypt and decrypt using *different key*
-- RSA
+	+ RSA
 
 
 Trapdoor function
@@ -1686,4 +1686,6 @@ Definition
 
 Random
 ======
+
+
 
